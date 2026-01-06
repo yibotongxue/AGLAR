@@ -1,5 +1,5 @@
 dataset_name='coco' # 'aokvqa' 'gqa'
-image_folder='/workspace/data/val2014' # '/workspace/data/gqa'
+image_folder='/home/yzh/cs285/AGLA/pope_source/val2014' # '/workspace/data/gqa'
 for seed in 1 2 3
 do
 for type in 'random' 'popular' 'adversarial'

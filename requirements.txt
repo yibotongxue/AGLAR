@@ -1,7 +1,7 @@
 torchvision==0.15.2
-transformers==4.34.0
+transformers==4.26
 torch==2.0.1
-tokenizers==0.14.0
+tokenizers==0.13
 sentencepiece==0.1.99
 shortuuid
 accelerate==0.21.0
@@ -17,5 +17,5 @@ uvicorn
 fastapi
 einops==0.6.1
 einops-exts==0.0.4
-timm==0.6.13
+timm>=0.4.12
 salesforce-lavis==1.0.2

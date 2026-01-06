@@ -4,8 +4,8 @@ import argparse
 from tqdm import tqdm
 import numpy as np
 parser = argparse.ArgumentParser()
-parser.add_argument("--gt_files", type=str, default="/workspace/10_AGLA/AGLA/data/POPE/coco/coco_pope_popular.json")
-parser.add_argument("--gen_files", type=str, default="/workspace/10_AGLA/AGLA/output/blip_coco_pope_popular_answers_alga_seed1.jsonl")
+parser.add_argument("--gt_files", type=str, default="/home/yzh/cs285/AGLA/data/POPE/coco/coco_pope_random.json")
+parser.add_argument("--gen_files", type=str, default="/home/yzh/cs285/AGLA/output/llava_coco_pope_random_answers_agla_seed1.jsonl")
 args = parser.parse_args()
 
 # open ground truth answers
