@@ -36,20 +36,26 @@ def adjust_weights_by_similarity(patch_features, patch_weights, temperature=0.1)
 
     return adjusted_weights
 
-def augmentation(image, question, tensor_image, model, tokenized_text, raw_image, vision_encoder, vision_processor, blocks: list[int],
-                 weights: list[float] | None=None, save_base_dir=None, sample_id=None, problem=None):
+def augmentation(image, question, tensor_image, model, tokenized_text, raw_image, vision_encoder, vision_processor, blocks,
+                 weights=None, save_base_dir=None, sample_id=None, problem=None):
     # start_time = time.time()
     if weights is None:
         weights = [1.0 / len(blocks)] * len(blocks)
     weight_sum = sum(weights)
     weights = [w / weight_sum for w in weights]
+
+    gradcams = None
     with torch.set_grad_enabled(True):
-        gradcams, _ = compute_gradcam(model=model,
-                                      visual_input=image,
-                                      text_input=question,
-                                      tokenized_text=tokenized_text,
-                                      blocks=blocks,
-                                      weights=weights)
+        for block_num, weight in zip(blocks, weights):
+            single_gradcams, _ = compute_gradcam(model=model,
+                                        visual_input=image,
+                                        text_input=question,
+                                        tokenized_text=tokenized_text,
+                                        block_num=block_num)
+            if gradcams is None:
+                gradcams = [weight * gradcam_ for gradcam_ in single_gradcams]
+            else:
+                gradcams = [g1 + weight * g2 for g1, g2 in zip(gradcams, single_gradcams)]
     # start_time2 = time.time()
 
     with torch.no_grad():
