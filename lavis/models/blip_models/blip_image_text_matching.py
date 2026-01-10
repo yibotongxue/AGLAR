@@ -148,10 +148,12 @@ class BlipITM(BlipBase):
         return model
 
 
-def compute_gradcam(model, visual_input, text_input, tokenized_text, block_num=6):
-    model.text_encoder.base_model.base_model.encoder.layer[
-        block_num
-    ].crossattention.self.save_attention = True
+def compute_gradcam(model, visual_input, text_input, tokenized_text, blocks: list[int], weights: list[float]):
+    assert len(blocks) == len(weights), "blocks and weights must have the same length"
+    for block_num in blocks:
+        model.text_encoder.base_model.base_model.encoder.layer[
+            block_num
+        ].crossattention.self.save_attention = True
 
     output = model({"image": visual_input, "text_input": text_input}, match_head="itm")
     loss = output[:, 1].sum()
@@ -165,12 +167,21 @@ def compute_gradcam(model, visual_input, text_input, tokenized_text, block_num=6
         token_length = tokenized_text.attention_mask.sum(dim=-1) - 2
         token_length = token_length.cpu()
         # grads and cams [bsz, num_head, seq_len, image_patch]
-        grads = model.text_encoder.base_model.base_model.encoder.layer[
-            block_num
-        ].crossattention.self.get_attn_gradients()
-        cams = model.text_encoder.base_model.base_model.encoder.layer[
-            block_num
-        ].crossattention.self.get_attention_map()
+        grads=None
+        cams=None
+        for block_num, weight in zip(blocks, weights):
+            grad = model.text_encoder.base_model.base_model.encoder.layer[
+                block_num
+            ].crossattention.self.get_attn_gradients()
+            cam = model.text_encoder.base_model.base_model.encoder.layer[
+                block_num
+            ].crossattention.self.get_attention_map()
+            if grads is None:
+                grads = weight * grad
+                cams = weight * cam
+            else:
+                grads += weight * grad
+                cams += weight * cam
 
         # assume using vit with 576 num image patch
         cams = cams[:, :, :, 1:].reshape(visual_input.size(0), 12, -1, 24, 24) * mask

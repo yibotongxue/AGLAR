@@ -82,6 +82,8 @@ def eval_model(args):
             augmented_image = augmentation(image, question, tensor_image, model_itm, tokenized_text, raw_image,
                                            model.model.vision_tower.vision_tower,
                                            model.model.vision_tower.image_processor,
+                                           blocks=[6],
+                                           weights=[1.0],
                                            # save_base_dir="./augmented_images",
                                            # sample_id=idx,
                                            # problem=question
