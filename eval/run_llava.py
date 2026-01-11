@@ -123,6 +123,7 @@ def eval_model(args):
                 cd_alpha = args.alpha,
                 cd_beta = args.beta,
                 use_entropy=args.use_entropy,
+                use_max_probability=args.use_max_probability,
                 do_sample=True,
                 temperature=args.temperature,
                 top_p=args.top_p,
@@ -166,6 +167,7 @@ if __name__ == "__main__":
     parser.add_argument("--top_k", type=int, default=None)
     parser.add_argument("--use_agla", action='store_true', default=True)
     parser.add_argument("--use-entropy", action='store_true', default=False)
+    parser.add_argument("--use-max-probability", action='store_true', default=False)
     parser.add_argument("--alpha", type=float, default=2.0)
     parser.add_argument("--beta", type=float, default=0.5)
     parser.add_argument("--seed", type=int, default=0)

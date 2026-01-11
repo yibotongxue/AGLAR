@@ -69,6 +69,7 @@ class LlavaLlamaForCausalLM(LlamaForCausalLM, LlavaMetaForCausalLM):
         cd_beta: Optional[torch.FloatTensor] = None,
         cd_alpha: Optional[torch.FloatTensor] = None,
         use_entropy: Optional[bool] = False,
+        use_max_probability: Optional[bool] = False,
         return_dict: Optional[bool] = None,
     ) -> Union[Tuple, CausalLMOutputWithPast]:
         output_attentions = output_attentions if output_attentions is not None else self.config.output_attentions
